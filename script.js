@@ -569,8 +569,99 @@ function render(matches, upcoming) {
 
   wireAvatarFallbacks();
   initializeLineupBuilder(matches, standings, upcoming);
+  loadSchedule(matches);
 
   document.querySelector("#status")?.remove();
+}
+
+function localIsoDate(date = new Date()) {
+  const pad = (value) => String(value).padStart(2, "0");
+  return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}`;
+}
+
+function parseSchedule(text) {
+  return text.split(/\r?\n/)
+    .map((line) => line.trim())
+    .filter((line) => line && !line.startsWith("#"))
+    .map((date) => {
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) throw new Error(`Invalid schedule date: ${date}`);
+      return { date };
+    })
+    .sort((a, b) => a.date.localeCompare(b.date));
+}
+
+function daysUntil(date, today) {
+  return Math.round((new Date(`${date}T12:00:00`) - new Date(`${today}T12:00:00`)) / 86400000);
+}
+
+function renderSchedule(games, matches, today = localIsoDate()) {
+  const container = document.querySelector("#schedule-list");
+  const results = new Map(matches.map((match) => [match.date, match]));
+  const next = games.find((game) => game.date >= today);
+  const played = games.filter((game) => game.date < today).length;
+  const weekday = (date) => new Intl.DateTimeFormat("en-GB", { weekday: "short" }).format(new Date(`${date}T12:00:00`));
+  const dayMonth = (date) => new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short" }).format(new Date(`${date}T12:00:00`));
+  const monthLabel = (date) => new Intl.DateTimeFormat("en-GB", { month: "long", year: "numeric" }).format(new Date(`${date}T12:00:00`));
+
+  let summary;
+  if (next) {
+    const days = daysUntil(next.date, today);
+    const when = days === 0 ? "Today" : days === 1 ? "Tomorrow" : `In ${days} days`;
+    summary = `
+      <div class="schedule-next">
+        <span class="schedule-next-label">Next game</span>
+        <strong>${escapeHtml(formatDate(next.date))}</strong>
+        <span class="schedule-next-when">${when}</span>
+      </div>`;
+  } else {
+    summary = `<div class="schedule-next"><span class="schedule-next-label">Season finished</span><strong>See you next season</strong></div>`;
+  }
+
+  const months = [];
+  games.forEach((game) => {
+    const label = monthLabel(game.date);
+    if (!months.length || months.at(-1).label !== label) months.push({ label, games: [] });
+    months.at(-1).games.push(game);
+  });
+
+  container.innerHTML = `
+    ${summary}
+    <p class="schedule-progress">${played} of ${games.length} played · ${games.length - played} to go</p>
+    ${months.map(({ label, games: monthGames }) => `
+      <section class="schedule-month" aria-label="${escapeHtml(label)}">
+        <h3>${escapeHtml(label)}</h3>
+        <ol>
+          ${monthGames.map((game) => {
+            const past = game.date < today;
+            const isNext = next && game.date === next.date;
+            const match = results.get(game.date);
+            const score = match ? `${match.teams[0].score}–${match.teams[1].score}` : "";
+            const state = isNext ? (game.date === today ? "Today" : "Next") : "";
+            return `
+              <li class="schedule-game${past ? " is-past" : ""}${isNext ? " is-next" : ""}"${isNext ? ' aria-current="date"' : ""}>
+                <time datetime="${game.date}"><span>${weekday(game.date)}</span> ${dayMonth(game.date)}</time>
+                ${past ? `<span class="schedule-result">${score ? `<span class="sr-only">Played, </span>${score}` : "Played"}</span>` : ""}
+                ${state ? `<span class="schedule-badge">${state}</span>` : ""}
+              </li>`;
+          }).join("")}
+        </ol>
+      </section>
+    `).join("")}
+  `;
+}
+
+function loadSchedule(matches) {
+  fetch("schedule.txt", { cache: "no-store" })
+    .then((response) => {
+      if (!response.ok) throw new Error("Could not load schedule.txt.");
+      return response.text();
+    })
+    .then((text) => renderSchedule(parseSchedule(text), matches))
+    .catch((error) => {
+      console.error(error);
+      document.querySelector("#schedule-list").innerHTML =
+        '<p class="schedule-empty is-error">The schedule could not be loaded.</p>';
+    });
 }
 
 const tabs = [...document.querySelectorAll('[role="tab"]')];

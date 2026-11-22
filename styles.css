@@ -187,12 +187,32 @@ footer { min-height: 92px; padding: 0 max(20px, calc((100% - 1180px) / 2)); disp
 @keyframes bounce { from { transform: translateY(-5px); } to { transform: translateY(3px); } }
 .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
 
+.schedule { max-width: 720px; display: grid; gap: 18px; }
+.schedule-next { padding: 20px 24px; display: grid; gap: 4px; background: var(--panel-header); border: 1px solid var(--line); border-top: 4px solid var(--ink); box-shadow: 6px 6px 0 var(--yellow); }
+.schedule-next-label { color: #6a675f; font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.schedule-next strong { font-size: 24px; font-weight: 850; line-height: 1.2; }
+.schedule-next-when { color: #4f5955; font-size: 14px; font-weight: 700; }
+.schedule-progress { margin: 0; color: #4f5955; font-size: 13px; font-weight: 700; }
+.schedule-month { background: var(--floor-light); border: 1px solid var(--line); }
+.schedule-month h3 { margin: 0; padding: 12px 18px; background: var(--panel-header); border-bottom: 1px solid var(--line); color: #6a675f; font-size: 11px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; }
+.schedule-month ol { margin: 0; padding: 0; list-style: none; }
+.schedule-game { min-height: 48px; padding: 10px 18px; display: flex; align-items: center; gap: 12px; border-bottom: 1px solid #dce5e8; font-size: 15px; }
+.schedule-game:last-child { border-bottom: 0; }
+.schedule-game time { min-width: 7.5em; font-weight: 800; }
+.schedule-game time span { display: inline-block; min-width: 2.4em; color: #5f6a66; font-weight: 700; }
+.schedule-result { margin-left: auto; color: #6b7471; font-size: 13px; font-weight: 700; font-variant-numeric: tabular-nums; }
+.schedule-game.is-past { color: #7d8683; background: #eef2f3; }
+.schedule-game.is-past time { text-decoration: line-through; text-decoration-thickness: 2px; text-decoration-color: var(--red); }
+.schedule-game.is-next { background: var(--selected-row); box-shadow: inset 4px 0 0 var(--red); }
+.schedule-badge { margin-left: auto; padding: 4px 8px; color: var(--ink); background: var(--yellow); font-size: 10px; font-weight: 900; letter-spacing: .1em; text-transform: uppercase; }
+.schedule-empty { margin: 0; color: #4f5955; font-weight: 700; }
+.schedule-empty.is-error { color: #a8201a; }
+
 @media (max-width: 780px) {
   html { overflow-y: auto; scrollbar-gutter: auto; }
   .site-header { width: min(100% - 28px, 1180px); padding-top: 18px; flex-wrap: wrap; }
   .brand { width: 100%; }
-  .tabs { width: 100%; min-height: 54px; gap: clamp(16px, 6vw, 28px); overflow-x: auto; }
-  .tabs { overflow-y: hidden; }
+  .tabs { width: 100%; min-height: 54px; gap: clamp(16px, 6vw, 28px); overflow-x: auto; overflow-y: hidden; }
   .tabs button { flex: 0 0 auto; }
   .tabs button::after { bottom: 0; }
   .section { padding: 48px 14px 72px; }
@@ -239,11 +259,14 @@ footer { min-height: 92px; padding: 0 max(20px, calc((100% - 1180px) / 2)); disp
 }
 
 @media (max-width: 480px) {
+  .tabs { gap: clamp(12px, 4vw, 20px); }
+  .tabs button { font-size: 13px; }
+  .schedule-next strong { font-size: 20px; }
+  .schedule-game { padding: 10px 14px; font-size: 14px; }
   .site-header { min-height: 72px; }
   .brand { font-size: 14px; }
   h1, h2 { font-size: 34px; }
   .brand h1 { text-shadow: 3px 3px 0 rgba(255, 220, 0, .72); }
-  .tabs button { font-size: 15px; }
   .player-picker { grid-template-columns: 1fr; }
   .picker-toolbar { padding: 8px 14px; gap: 10px; }
   .picker-title { flex-direction: column; gap: 1px; }

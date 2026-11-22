@@ -15,8 +15,8 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Graduate&amp;display=swap">
-    <link rel="stylesheet" href="styles.css?v=polish-1">
-    <script src="script.js?v=polish-1" defer></script>
+    <link rel="stylesheet" href="styles.css?v=schedule-1">
+    <script src="script.js?v=schedule-1" defer></script>
   </head>
   <body>
     <header class="site-header">
@@ -28,6 +28,7 @@
         <button id="results-tab" type="button" role="tab" aria-selected="false" aria-controls="results" data-tab="results" tabindex="-1">Results</button>
         <button id="together-tab" type="button" role="tab" aria-selected="false" aria-controls="together" data-tab="together" tabindex="-1">Together</button>
         <button id="lineups-tab" type="button" role="tab" aria-selected="false" aria-controls="lineups" data-tab="lineups" tabindex="-1">Teams</button>
+        <button id="schedule-tab" type="button" role="tab" aria-selected="false" aria-controls="schedule" data-tab="schedule" tabindex="-1">Schedule</button>
       </nav>
     </header>
 
@@ -60,6 +61,10 @@
 
       <section class="section tab-panel" id="together" role="tabpanel" aria-labelledby="together-tab" hidden>
         <div class="matrix-wrap" id="together-matrix"></div>
+      </section>
+
+      <section class="section tab-panel schedule-section" id="schedule" role="tabpanel" aria-labelledby="schedule-tab" hidden>
+        <div class="schedule" id="schedule-list"><p class="schedule-empty">Loading the schedule…</p></div>
       </section>
 
       <section class="section tab-panel lineup-section" id="lineups" role="tabpanel" aria-labelledby="lineups-tab" hidden>

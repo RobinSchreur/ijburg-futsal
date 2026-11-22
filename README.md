@@ -39,6 +39,12 @@ python3 scrape_meetup.py
 The script updates that event's dated block in `matches.txt`, or inserts it at
 the top if it is not there yet. Existing match results are left unchanged.
 
+## Season schedule
+
+The **Schedule** tab reads [`schedule.txt`](schedule.txt): one game date per line
+(`YYYY-MM-DD`). Past dates are crossed out automatically (with the score when
+the match is in `matches.txt`) and the next game is highlighted at the top.
+
 ## Add player photos
 
 Place each photo in the [`avatars`](avatars) folder and name it `<player name>.jpg`. The name must match `matches.txt` exactly—for example, `Daniel Bradburn.jpg`. Square images work best. Missing photos fall back to the player’s initials.
