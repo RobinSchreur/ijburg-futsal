@@ -45,6 +45,25 @@ The **Schedule** tab reads [`schedule.txt`](schedule.txt): one game date per lin
 (`YYYY-MM-DD`). Past dates are crossed out automatically (with the score when
 the match is in `matches.txt`) and the next game is highlighted at the top.
 
+## Suggest teams with private ratings
+
+`make_teams.py` suggests three balanced Red/Blue splits for the upcoming player
+list in `matches.txt` (or `--players "A, B, ..."`), each with a WhatsApp share
+link. It first splits "never play together" pairs, then spreads defenders and
+strikers, then evens out total strength from the private tiers, and finally uses
+the same result-based checks as the website. Because of the private ratings it
+can suggest different teams than the website's team picker.
+
+```bash
+python3 make_teams.py --players "Jane Example, John Sample, ..."
+python3 make_teams.py --json   # teams and WhatsApp links for a scheduler
+python3 -m unittest test_make_teams
+```
+
+The ratings are private. Keep them out of this public repository: put them in a
+git-ignored `ratings.txt` locally, or in a `PLAYER_RATINGS` secret on a
+scheduler. See [`ratings.example.txt`](ratings.example.txt) for the format.
+
 ## Add player photos
 
 Place each photo in the [`avatars`](avatars) folder and name it `<player name>.jpg`. The name must match `matches.txt` exactly—for example, `Daniel Bradburn.jpg`. Square images work best. Missing photos fall back to the player’s initials.
