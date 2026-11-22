@@ -124,6 +124,9 @@ function renderTeamName(name) {
   return escapeHtml(name);
 }
 
+// Photos that failed to load once are not requested again when lists re-render.
+const missingAvatars = new Set();
+
 function renderAvatar(name) {
   const initials = name
     .trim()
@@ -132,11 +135,12 @@ function renderAvatar(name) {
     .map((part) => part[0])
     .join("")
     .toUpperCase();
-  const fileName = encodeURIComponent(`${name}.jpg`);
+  const source = `avatars/${encodeURIComponent(`${name}.jpg`)}`;
+  const missing = missingAvatars.has(source);
 
   return `
-    <span class="avatar" aria-hidden="true">
-      <img src="avatars/${fileName}" alt="" loading="lazy">
+    <span class="avatar${missing ? " avatar-missing" : ""}" aria-hidden="true">
+      ${missing ? "" : `<img src="${source}" alt="" loading="lazy" decoding="async">`}
       <span class="avatar-fallback">${escapeHtml(initials)}</span>
     </span>
   `;
@@ -307,7 +311,10 @@ function generateSuggestions(names, count = 3) {
 
 function wireAvatarFallbacks(scope = document) {
   scope.querySelectorAll(".avatar img").forEach((image) => {
-    image.addEventListener("error", () => image.parentElement.classList.add("avatar-missing"), { once: true });
+    image.addEventListener("error", () => {
+      missingAvatars.add(image.getAttribute("src"));
+      image.parentElement.classList.add("avatar-missing");
+    }, { once: true });
   });
 }
 
@@ -354,6 +361,8 @@ function updateSelectionState(message = "") {
   const count = lineupState.selected.size;
   document.querySelector("#selection-count").textContent = `${count} selected`;
   const guidance = document.querySelector("#lineup-guidance");
+
+  document.querySelector("#jump-to-teams").hidden = count !== 10 && count !== 12;
 
   if (message) guidance.textContent = message;
   else if (count < 10) guidance.textContent = `Select ${10 - count} more for a 10-player game.`;
@@ -434,7 +443,11 @@ async function copyLineup(button) {
     textarea.remove();
   }
   button.textContent = "Copied";
-  setTimeout(() => { button.textContent = "Copy teams"; }, 1400);
+  button.classList.add("is-copied");
+  setTimeout(() => {
+    button.textContent = "Copy teams";
+    button.classList.remove("is-copied");
+  }, 1400);
 }
 
 function initializeLineupBuilder(matches, standings, upcoming) {
@@ -539,7 +552,7 @@ function render(matches, upcoming) {
             </ul>
           </div>
           <div class="match-score" aria-label="${teams[0].score} to ${teams[1].score}">
-            <strong>${teams[0].score}</strong><span>–</span><strong>${teams[1].score}</strong>
+            <strong${teams[0].score < teams[1].score ? ' class="score-lost"' : ""}>${teams[0].score}</strong><span>–</span><strong${teams[1].score < teams[0].score ? ' class="score-lost"' : ""}>${teams[1].score}</strong>
           </div>
           <div class="team-b">
             <h3>${renderTeamName(teams[1].name)}</h3>
@@ -657,6 +670,12 @@ document.querySelector("#new-player-form").addEventListener("submit", (event) =>
   refreshSuggestions();
 });
 
+document.querySelector("#jump-to-teams").addEventListener("click", () => {
+  const suggestions = document.querySelector("#lineup-suggestions");
+  const reduceMotion = matchMedia("(prefers-reduced-motion: reduce)").matches;
+  suggestions.scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block: "start" });
+});
+
 document.querySelector("#clear-selection").addEventListener("click", () => {
   lineupState.selected.clear();
   renderPlayerPicker();
@@ -694,6 +713,7 @@ fetch("matches.txt", { cache: "no-store" })
   })
   .catch((error) => {
     console.error(error);
-    document.querySelector("#status").textContent =
-      "The match file has a formatting error. Please check the latest entry.";
+    const status = document.querySelector("#status");
+    status.classList.add("is-error");
+    status.textContent = "The match file has a formatting error. Please check the latest entry.";
   });

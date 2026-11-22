@@ -1,4 +1,4 @@
-const CACHE_NAME = "ijburg-futsal-v1";
+const CACHE_NAME = "ijburg-futsal-v2";
 const NETWORK_FIRST_FILES = new Set([
   "index.html",
   "matches.txt",
