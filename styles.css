@@ -91,10 +91,6 @@ tbody th { color: var(--ink); font-size: 15px; }
 .matrix-table td:hover { outline: 3px solid var(--red); outline-offset: -3px; }
 
 .lineup-section { padding-top: 42px; }
-.lineup-heading { margin-bottom: 30px; display: flex; align-items: flex-end; justify-content: space-between; gap: 28px; }
-.lineup-heading h2 { font-size: clamp(36px, 5vw, 58px); }
-.lineup-heading .eyebrow { margin-bottom: 10px; }
-.lineup-intro { max-width: 680px; margin: 14px 0 0; color: #4f5955; font-size: 15px; line-height: 1.6; }
 .lineup-builder { display: grid; grid-template-columns: minmax(340px, 440px) minmax(0, 1fr); gap: 22px; align-items: start; }
 .picker-card, .suggestion-card, .empty-suggestions { background: var(--floor-light); border: 1px solid var(--line); border-top: 4px solid var(--ink); box-shadow: 0 14px 36px rgba(35, 48, 43, .08); }
 .picker-card { position: sticky; top: 18px; overflow: hidden; }
@@ -225,7 +221,6 @@ footer { min-height: 92px; padding: 0 max(20px, calc((100% - 1180px) / 2)); disp
   .matrix-table td { width: 58px; min-width: 58px; height: 58px; padding: 7px; }
 
   .lineup-section { padding-top: 30px; }
-  .lineup-heading { align-items: center; }
   .lineup-builder { grid-template-columns: 1fr; }
   .picker-card { position: static; overflow: visible; }
   .picker-toolbar { position: sticky; top: 0; z-index: 3; box-shadow: 0 6px 12px -8px rgba(23, 27, 26, .35); }
@@ -249,8 +244,6 @@ footer { min-height: 92px; padding: 0 max(20px, calc((100% - 1180px) / 2)); disp
   h1, h2 { font-size: 34px; }
   .brand h1 { text-shadow: 3px 3px 0 rgba(255, 220, 0, .72); }
   .tabs button { font-size: 15px; }
-  .lineup-heading { align-items: flex-end; }
-  .lineup-intro { font-size: 13px; }
   .player-picker { grid-template-columns: 1fr; }
   .picker-toolbar { padding: 8px 14px; gap: 10px; }
   .picker-title { flex-direction: column; gap: 1px; }
