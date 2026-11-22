@@ -64,6 +64,20 @@ The ratings are private. Keep them out of this public repository: put them in a
 git-ignored `ratings.txt` locally, or in a `PLAYER_RATINGS` secret on a
 scheduler. See [`ratings.example.txt`](ratings.example.txt) for the format.
 
+## Check for enough players
+
+`sunday_check.py` reads the next Meetup event and reports how many players are
+going and on the waitlist. If fewer than the event's limit (usually 12) are
+going, it suggests this season's regular players (season start from
+`schedule.txt`) who have not signed up yet, with a WhatsApp message and the
+Meetup sign-up link.
+
+```bash
+python3 sunday_check.py          # summary
+python3 sunday_check.py --json   # for a scheduled email
+python3 -m unittest test_sunday_check
+```
+
 ## Add player photos
 
 Place each photo in the [`avatars`](avatars) folder and name it `<player name>.jpg`. The name must match `matches.txt` exactly—for example, `Daniel Bradburn.jpg`. Square images work best. Missing photos fall back to the player’s initials.
